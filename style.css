@@ -20,3 +20,8 @@ header {
 .active {
     transform: scale(1.1);
 }
+
+.results-screen {
+    min-height: 100vh;
+    background-color: lightgray;
+}

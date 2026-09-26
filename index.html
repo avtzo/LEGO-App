@@ -17,13 +17,17 @@
             <button type="button" id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         <div class="search-menu">
-            <button type="button" id="search-by-set-name-btn" data-type="text" data-placeholder="Search for a set" class="search-type-btn active">Search by Set Name</button>
-            <button type="button" id="search-by-set-details-btn" data-type="number" data-placeholder="Search for set details. E.g. 42100" class="search-type-btn">Set Details</button>
-            <button type="button" id="search-by-set-parts-btn" data-type="number" data-placeholder="Search for set parts. E.g. 42055" class="search-type-btn">Set Parts</button>
+            <button type="button" id="search-by-set-name-btn" data-type="text" data-action="search-name" data-placeholder="Search for a set" class="search-type-btn active">Search by Set Name</button>
+            <button type="button" id="search-by-set-details-btn" data-type="number" data-action="search-details" data-placeholder="Search for set details. E.g. 42100" class="search-type-btn">Set Details</button>
+            <button type="button" id="search-by-set-parts-btn" data-type="number" data-action="search-parts" data-placeholder="Search for set parts. E.g. 42055" class="search-type-btn">Set Parts</button>
         </div>
     </header>
     <main>
-
+        <div class="results-screen-filters"></div>
+        <div class="results-screen">
+            <div class="results-container"></div>
+            <button type="button" id="load-more-btn">Load More</button>
+        </div>
     </main>
 
     <script src="app.js" type="module" defer></script>
