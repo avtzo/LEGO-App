@@ -1,6 +1,7 @@
 // Imported Functions
 
 import { fetchLegoSet, fetchLegoSetDetails, fetchLegoSetParts } from "./api.js";
+import { createContainer } from "./ui.js";
 
 // Buttons & Inputs
 
@@ -12,6 +13,7 @@ const userInput = document.getElementById("user-input");
 
 const searchMenu = document.querySelector(".search-menu");
 const resultsContainer = document.querySelector(".results-container");
+const resultsCount = document.getElementById("results-count");
 
 // Main Code
 
@@ -33,13 +35,23 @@ document.addEventListener("click", (e) => {
 async function search(query) {
     const activeBtn = searchMenu.querySelector(".search-type-btn.active");
     const searchType = activeBtn ? activeBtn.dataset.action : "search-name";
+    resultsContainer.innerHTML = "";
 
     if (searchType === "search-name") {
-        await fetchLegoSet(query);
+        const data = await fetchLegoSet(query);
+        resultsCount.textContent = `Found: ${data.count}`;
+        data.results.forEach(set => {
+            resultsContainer.appendChild(createContainer(set, "search-name"));
+        });
     } else if (searchType === "search-details") {
-        await fetchLegoSetDetails(query);
+        const data = await fetchLegoSetDetails(query);
+        resultsContainer.appendChild(createContainer(data, "search-details"));
     } else if (searchType === "search-parts") {
-        await fetchLegoSetParts(query);
+        const data = await fetchLegoSetParts(query);
+        resultsCount.textContent = `Total Parts: ${data.count}`;
+        data.results.forEach(part => {
+            resultsContainer.appendChild(createContainer(part, "search-parts"));
+        });
     }
 }
 
