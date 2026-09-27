@@ -30,8 +30,8 @@ const LEGO_THEMES = {
 
 export function createContainer(item, searchType) {
     const container = document.createElement("div");
-    const setTheme = item.theme_id;
     container.classList.add("container");
+    const setTheme = item.theme_id;
 
     if (searchType === "search-name") {
         container.innerHTML = 
@@ -39,7 +39,8 @@ export function createContainer(item, searchType) {
             <img src="${item.set_img_url}" class="container-img">
             <h1 class="set-name">${item.name}</h1>
             <h2 class="set-theme">Theme: ${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
-            <p>Set Number: ${item.set_num}</p>
+            <p>Set Number: ${item.set_num.split("-")[0]}</p>
+            <button type="button" class="add-to-vault-btn">Save</button>
         `;
     } else if (searchType === "search-details") {
         container.innerHTML =
@@ -47,7 +48,7 @@ export function createContainer(item, searchType) {
             <img src="${item.set_img_url}" class="container-img">
             <h1 class="set-name">${item.name}</h1>
             <h2 class="set-theme">${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
-            <p>Set Number: ${item.set_num}</p>
+            <p>Set Number: ${item.set_num.split("-")[0]}</p>
             <p id="set-parts">Parts: ${item.num_parts}</p>
             <p id="set-release">Release Date: ${item.year}</p>
         `;

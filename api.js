@@ -3,7 +3,7 @@ const baseURL = "https://rebrickable.com/api/v3/lego";
 
 export async function fetchLegoSet(query) {
     try {
-        const response = await fetch(`${baseURL}/sets/?search=${encodeURIComponent(query)}`, { headers: { 'Authorization': `key ${apiKey}`}});
+        const response = await fetch(`${baseURL}/sets/?search=${encodeURIComponent(query)}&min_parts=50`, { headers: { 'Authorization': `key ${apiKey}`}});
         if (!response.ok) {
             throw new Error(`Error fetching data: ${response.status}`);
         }
@@ -32,6 +32,20 @@ export async function fetchLegoSetDetails(setId) {
 export async function fetchLegoSetParts(setId) {
     try {
         const response = await fetch(`${baseURL}/sets/${setId}-1/parts/`, { headers: { 'Authorization': `key ${apiKey}`}});
+        if (!response.ok) {
+            throw new Error(`Error fetching data: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch(error) {
+        console.error(error.message);
+    }
+}
+
+export async function fetchLatestLego() {
+    try {
+        const response = await fetch(`${baseURL}/sets/?min_year=${new Date().getFullYear()}&min_parts=150`, { headers: { 'Authorization': `key ${apiKey}`}});
         if (!response.ok) {
             throw new Error(`Error fetching data: ${response.status}`);
         }

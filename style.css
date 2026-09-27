@@ -17,6 +17,10 @@ header {
     background-color: yellow;
 }
 
+.hidden {
+    display: none !important;
+}
+
 .active {
     transform: scale(1.1);
 }
