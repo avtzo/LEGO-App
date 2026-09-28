@@ -8,6 +8,7 @@ import { createContainer } from "./ui.js";
 const loadMoreBtn = document.getElementById("load-more-btn");
 const searchBtn = document.getElementById("search-btn");
 const userInput = document.getElementById("user-input");
+const goToVaultBtn = document.getElementById("go-to-vault-btn");
 
 // Elements
 
@@ -16,6 +17,11 @@ setNameContainer.classList.add("set-name-p");
 const searchMenu = document.querySelector(".search-menu");
 const resultsContainer = document.querySelector(".results-container");
 const resultsCount = document.getElementById("results-count");
+const resultsHeader = document.getElementById("results-header");
+
+// Local Storage
+
+const savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
 
 // Main Code
 
@@ -31,11 +37,10 @@ document.addEventListener("click", (e) => {
     clickedBtn.classList.add("active");
 
     userInput.setAttribute("type", clickedBtn.dataset.type);
-    userInput.setAttribute("placeholder", clickedBtn.dataset.placeholder);    
+    userInput.setAttribute("placeholder", clickedBtn.dataset.placeholder);
 });
 
 async function showLatestSets() {
-    resultsContainer.innerHTML = `<h1>Latest Sets</h1>`;
     const data = await fetchLatestLego();
     data.results.forEach(set => {
         resultsContainer.appendChild(createContainer(set, "search-name"));
@@ -49,22 +54,32 @@ async function search(query) {
     resultsContainer.innerHTML = "";
 
     if (searchType === "search-name") {
+        resultsHeader.textContent = "Search Results";
+
         const data = await fetchLegoSet(query);
         resultsCount.textContent = `Found: ${data.count}`;
+
         data.results.forEach(set => {
             resultsContainer.appendChild(createContainer(set, "search-name"));
         });
         loadMoreBtn.classList.remove("hidden");
     } else if (searchType === "search-details") {
+        resultsHeader.textContent = "Set Details";
+
         resultsCount.textContent = "";
+
         const data = await fetchLegoSetDetails(query);
         resultsContainer.appendChild(createContainer(data, "search-details"));
         loadMoreBtn.classList.add("hidden");
     } else if (searchType === "search-parts") {
+        resultsHeader.textContent = "Set Parts";
+
         const data = await fetchLegoSetParts(query);
         resultsCount.textContent = `Total Parts: ${data.count}`;
         setNameContainer.textContent = `Set Number: ${data.results[0].set_num}`;
+
         resultsContainer.appendChild(setNameContainer);
+
         data.results.forEach(part => {
             resultsContainer.appendChild(createContainer(part, "search-parts"));
         });
@@ -74,11 +89,14 @@ async function search(query) {
 
 showLatestSets();
 
+
+
 searchBtn.addEventListener("click", () => {
     const query = userInput.value.trim();
 
     if (query === "") {
         resultsContainer.innerHTML = "";
+        resultsHeader.textContent = "Latest Sets";
         showLatestSets();
         return;
     }
@@ -90,4 +108,18 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         searchBtn.click();
     }
+});
+
+goToVaultBtn.addEventListener("click", () => {
+    resultsContainer.innerHTML = "";
+    resultsHeader.textContent = "The Vault";
+    loadMoreBtn.classList.add("hidden");
+});
+
+resultsContainer.addEventListener("click", (e) => {
+    const addToVaultBtn = e.target.closest(".add-to-vault-btn");
+    if (!addToVaultBtn) {
+        return;
+    }
+    // Local Storage Save Logic
 });

@@ -35,12 +35,12 @@ export function createContainer(item, searchType) {
 
     if (searchType === "search-name") {
         container.innerHTML = 
-        `
+        ` 
             <img src="${item.set_img_url}" class="container-img">
             <h1 class="set-name">${item.name}</h1>
             <h2 class="set-theme">Theme: ${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
             <p>Set Number: ${item.set_num.split("-")[0]}</p>
-            <button type="button" class="add-to-vault-btn">Save</button>
+            <button type="button" class="add-to-vault-btn" id="${item.set_num}">Save</button>
         `;
     } else if (searchType === "search-details") {
         container.innerHTML =
