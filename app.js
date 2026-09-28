@@ -1,7 +1,12 @@
+// Global
+
+let ON_VAULT = false;
+
 // Imported Functions
 
 import { fetchLegoSet, fetchLegoSetDetails, fetchLegoSetParts, fetchLatestLego } from "./api.js";
 import { createContainer } from "./ui.js";
+
 
 // Buttons & Inputs
 
@@ -21,7 +26,7 @@ const resultsHeader = document.getElementById("results-header");
 
 // Local Storage
 
-const savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
+export const savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
 
 // Main Code
 
@@ -89,9 +94,22 @@ async function search(query) {
 
 showLatestSets();
 
-
+async function displayVault() {
+    resultsContainer.innerHTML = "";
+    if (savedSets.length === 0) {
+        resultsContainer.innerHTML = `<p id="empty-vault-msg">Your Vault is Empty!</p>`;
+        return;
+    }
+    for (let setId of savedSets) {
+        const set = await fetchLegoSetDetails(setId);
+        resultsContainer.appendChild(createContainer(set, "search-name"));
+    }
+}
 
 searchBtn.addEventListener("click", () => {
+    ON_VAULT = false;
+    resultsCount.classList.remove("hidden");
+
     const query = userInput.value.trim();
 
     if (query === "") {
@@ -111,9 +129,12 @@ document.addEventListener("keydown", (e) => {
 });
 
 goToVaultBtn.addEventListener("click", () => {
+    ON_VAULT = true;
     resultsContainer.innerHTML = "";
     resultsHeader.textContent = "The Vault";
+    resultsCount.classList.add("hidden");
     loadMoreBtn.classList.add("hidden");
+    displayVault();
 });
 
 resultsContainer.addEventListener("click", (e) => {
@@ -121,5 +142,17 @@ resultsContainer.addEventListener("click", (e) => {
     if (!addToVaultBtn) {
         return;
     }
-    // Local Storage Save Logic
+    const bookmarkIcon = addToVaultBtn.querySelector("i");
+    if (savedSets.includes(addToVaultBtn.id)) {
+        const itemToRemove = savedSets.indexOf(addToVaultBtn.id);
+        savedSets.splice(itemToRemove, 1);
+        bookmarkIcon.classList.replace("fa-solid", "fa-regular");
+    } else {
+        savedSets.push(addToVaultBtn.id);
+        bookmarkIcon.classList.replace("fa-regular", "fa-solid");
+    }
+    localStorage.setItem("savedSets", JSON.stringify(savedSets));
+    if (ON_VAULT) {
+        displayVault();
+    }
 });

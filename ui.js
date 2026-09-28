@@ -1,3 +1,5 @@
+import { savedSets } from "./app.js";
+
 const LEGO_THEMES = {
     1: "Technic",
     22: "Creator / Creator Expert",
@@ -31,7 +33,10 @@ const LEGO_THEMES = {
 export function createContainer(item, searchType) {
     const container = document.createElement("div");
     container.classList.add("container");
-    const setTheme = item.theme_id;
+    const setTheme = item.theme_id; 
+    
+    const isSaved = savedSets.includes(item.set_num);
+    const iType = isSaved ? "solid" : "regular";
 
     if (searchType === "search-name") {
         container.innerHTML = 
@@ -40,7 +45,7 @@ export function createContainer(item, searchType) {
             <h1 class="set-name">${item.name}</h1>
             <h2 class="set-theme">Theme: ${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
             <p>Set Number: ${item.set_num.split("-")[0]}</p>
-            <button type="button" class="add-to-vault-btn" id="${item.set_num}">Save</button>
+            <button type="button" class="add-to-vault-btn" id="${item.set_num}"><i class="fa-${iType} fa-bookmark"></i></button>
         `;
     } else if (searchType === "search-details") {
         container.innerHTML =
