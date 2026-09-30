@@ -33,3 +33,8 @@ main {
     min-height: 100vh;
     background-color: lightgray;
 }
+
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
