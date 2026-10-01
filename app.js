@@ -104,7 +104,7 @@ async function search(query) {
 
         while (data.next !== null) { // Gets all the parts of a set
             currentPage ++;
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Timeout for the API Calls
 
             data = await fetchLegoSetParts(query, currentPage);
 
@@ -172,6 +172,7 @@ searchBtn.addEventListener("click", () => {
     if (query === "") {
         resultsContainer.innerHTML = "";
         resultsHeader.textContent = "Latest Sets";
+        resultsCount.classList.add("hidden");
         showLatestSets();
         return;
     }

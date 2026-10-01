@@ -44,9 +44,11 @@ export function createContainer(item, searchType) {
             <img src="${item.set_img_url}" class="container-img">
             <h1 class="set-name">${item.name}</h1>
             <h2 class="set-theme">Theme: ${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
-            <p>Set Number: ${item.set_num.split("-")[0]}</p>
-            <button type="button" class="add-to-vault-btn" id="${item.set_num}"><i class="fa-${iType} fa-bookmark"></i></button>
-        `;
+            <div>
+                <p>Set Number: ${item.set_num.split("-")[0]}</p>
+                <button type="button" class="add-to-vault-btn" id="${item.set_num}"><i class="fa-${iType} fa-bookmark"></i></button>
+            </div>
+            `;
     } else if (searchType === "search-details") {
         container.innerHTML =
         `
@@ -57,6 +59,7 @@ export function createContainer(item, searchType) {
             <p id="set-parts">Parts: ${item.num_parts}</p>
             <p id="set-release">Release Date: ${item.year}</p>
         `;
+        container.style.width = "250px";
     } else if (searchType === "search-parts") {
         container.innerHTML = 
         `

@@ -1,1 +1,9 @@
-1. Styling
+1. Fix Layout on set Details
+2. Fix Layout on Set Parts
+    Set Number appears on the bottom
+    Load More btn appears before load
+3. Fix Layout on Vault
+    Empty vault msg needs styling
+4. Add Skeleton Loader on Set Parts & Details
+
+5. Maybe make header sticky
