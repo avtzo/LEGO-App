@@ -27,6 +27,7 @@ const resultsContainer = document.querySelector(".results-container");
 const resultsCount = document.getElementById("results-count");
 const resultsHeader = document.getElementById("results-header");
 const pageSize = document.getElementById("page-size");
+const resultsHeaderFilters = document.querySelector(".results-screen-filters");
 
 
 // Local Storage
@@ -91,9 +92,11 @@ async function search(query) {
         resultsContainer.appendChild(createContainer(data, "search-details"));
         loadMoreBtn.classList.add("hidden");
     } else if (searchType === "search-parts") {
+        resultsContainer.innerHTML = "";
+        loadMoreBtn.classList.add("hidden");
         resultsHeader.textContent = "Set Parts";
         pageSize.classList.add("hidden");
-
+        
         let currentPage = 1;
 
         let data = await fetchLegoSetParts(query, currentPage);
@@ -107,18 +110,16 @@ async function search(query) {
             await new Promise(resolve => setTimeout(resolve, 1000)); // Timeout for the API Calls
 
             data = await fetchLegoSetParts(query, currentPage);
-
+            
             data.results.forEach(part => {
                 resultsContainer.appendChild(createContainer(part, "search-parts"));
             });
         }        
-
+        
         resultsCount.textContent = `Total Parts: ${data.count}`;
-        setNameContainer.textContent = `Set Number: ${data.results[0].set_num}`;
-
+        setNameContainer.textContent = `Set Number: ${data.results[0].set_num.split("-")[0]}`;
+        setNameContainer.classList.add("set-name-parts");
         resultsContainer.appendChild(setNameContainer);
-
-        loadMoreBtn.classList.add("hidden");
     }
 }
 
