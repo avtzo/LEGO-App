@@ -39,6 +39,8 @@ export function createContainer(item, searchType) {
     const iType = isSaved ? "solid" : "regular";
 
     if (searchType === "search-name") {
+        container.classList.remove("parts");
+        container.classList.remove("details");
         container.innerHTML = 
         ` 
             <img src="${item.set_img_url}" class="container-img">
@@ -50,23 +52,32 @@ export function createContainer(item, searchType) {
             </div>
             `;
     } else if (searchType === "search-details") {
+        container.classList.add("details");
+        container.classList.remove("parts");
         container.innerHTML =
         `
             <img src="${item.set_img_url}" class="container-img">
             <h1 class="set-name">${item.name}</h1>
             <h2 class="set-theme">${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
-            <p>Set Number: ${item.set_num.split("-")[0]}</p>
-            <p id="set-parts">Parts: ${item.num_parts}</p>
-            <p id="set-release">Release Date: ${item.year}</p>
+            <div>
+                <p>Set Number: ${item.set_num.split("-")[0]}</p>
+                <p id="set-parts">Parts: ${item.num_parts}</p>
+                <p id="set-release">Release Date: ${item.year}</p>
+            </div>
         `;
         container.style.width = "250px";
     } else if (searchType === "search-parts") {
+        container.classList.add("parts");
+        container.classList.remove("details");
         container.innerHTML = 
         `
             <img src="${item.part.part_img_url}" alt="${item.part.name}" class="container-img">
-            <h1 class="part-id">${item.part.part_num}</h1>
-            <h3 class="part-quantity">Quantity: ${item.quantity}</h3>
+            <div>
+                <h1 class="part-id">${item.part.part_num}</h1>
+                <h3 class="part-quantity">Quantity: ${item.quantity}</h3>
+            </div>
         `;
+
     }
 
     return container;
