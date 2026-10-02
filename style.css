@@ -51,6 +51,10 @@ button:active {
     transform: scale(0.95);
 }
 
+select:hover {
+    cursor: pointer;
+}
+
 /* End of General Styling */
 
 header {
@@ -189,11 +193,50 @@ main {
     flex-direction: column;
     align-items: flex-start;
     position: relative;
-    width: 100%;
+    min-width: 300px;
+    width: fit-content;
     height: 320px;
     background: #fff;
     border-radius: 20px;
     padding: 10px 0;
+}
+
+.set-name-parts {
+    font-size: 2rem;
+    font-weight: 700;
+    position: absolute;
+    top: 15px;
+    left: 40%;
+}
+
+#results-count {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#empty-vault-msg {
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.details p,
+.details h2 {
+    position: static !important;
+}
+
+.details div {
+    display: flex;
+    flex-direction: column;
+}
+
+.container.parts {
+    height: 260px;
+}
+
+.parts div {
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 .container h1 {
