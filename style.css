@@ -1,14 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
-@keyframes borderSlide {
-    from {
-        border-width: 0;
-    }
-    to {
-        border-width: 100%;
-    }
-}
-
 @keyframes btnAnimation {
     0% {
         transform: scale(1) rotate(0);
@@ -68,7 +59,7 @@ header {
     align-items: center;
     max-width: 100vw;
     height: 100px;
-    background-color: red;
+    background-color: #FFD400;
 }
 
 .logo img {
@@ -87,6 +78,7 @@ header {
     outline: none;
     border: none;
     font-size: 2rem;
+    text-transform: capitalize;
 }
 
 .search-bar input::-webkit-inner-spin-button,
@@ -111,6 +103,7 @@ header {
 }
 
 .search-menu button {
+    position: relative;
     margin: 0 15px;
     padding: 3px;
     background: transparent;
@@ -121,13 +114,25 @@ header {
     cursor: pointer;
 }
 
-.search-menu button:hover {
-    border-bottom: 3px solid black;
-    animation: borderSlide 0.15s;
+.search-menu button::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: black;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease-in-out;
+}
+
+.search-menu button:not(.active):hover::after {
+    transform: scaleX(1);
 }
 
 .vault button {
-    background-color: #FFD400;
+    background-color: #BD0000;
     font-size: 2rem;
     border: none;
     padding: 10px;
@@ -166,7 +171,7 @@ main {
     position: absolute;
     right: 0;
     left: 0;
-    background-color: #FFD400;
+    background-color: #BD0000;
 }
 
 .results-container {
@@ -248,11 +253,10 @@ main {
 
 #load-more-btn {
     font-size: 2rem;
-    font-weight: 400;
+    font-weight: 500;
     display: block;
     margin: 20px auto;
-    background-color: dodgerblue;
-    color: white;
+    background-color: #FFD400;
     padding: 10px 80px;
     border: none;
     border-radius: 20px;
