@@ -20,8 +20,6 @@ const goToVaultBtn = document.getElementById("go-to-vault-btn");
 
 // Elements
 
-const setNameContainer = document.createElement("p");
-setNameContainer.classList.add("set-name-p");
 const searchMenu = document.querySelector(".search-menu");
 const resultsContainer = document.querySelector(".results-container");
 const resultsCount = document.getElementById("results-count");
@@ -35,6 +33,22 @@ const resultsHeaderFilters = document.querySelector(".results-screen-filters");
 export const savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
 
 // Main Code
+
+function renderSkeletons() {
+    resultsContainer.innerHTML = "";
+
+    for (let i = 0; i < 6; i++) {
+        const skeletonCard = document.createElement("div");
+        skeletonCard.className = "skeleton-card";
+        skeletonCard.innerHTML = 
+        `
+            <div class="skeleton skeleton-image"></div>
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text short"></div>
+        `;
+        resultsContainer.appendChild(skeletonCard);
+    }
+}
 
 document.addEventListener("click", (e) => {
     const clickedBtn = e.target.closest(".search-type-btn");
@@ -52,7 +66,11 @@ document.addEventListener("click", (e) => {
 });
 
 async function showLatestSets() {
+    renderSkeletons();
+
     const data = await fetchLatestLego();
+
+    resultsContainer.innerHTML = "";
     allResults = data.results;
     currentIndex = 0;
     pageSizeValue = Number(pageSize.value) || 8;
@@ -62,9 +80,11 @@ async function showLatestSets() {
 }
 
 async function search(query) {
+    
     const activeBtn = searchMenu.querySelector(".search-type-btn.active");
     const searchType = activeBtn ? activeBtn.dataset.action : "search-name";
-    resultsContainer.innerHTML = "";
+    
+    renderSkeletons();
 
     if (searchType === "search-name") {
         resultsContainer.innerHTML = "";
@@ -73,6 +93,7 @@ async function search(query) {
         pageSize.classList.remove("hidden");
 
         const data = await fetchLegoSet(query);
+        resultsContainer.innerHTML = "";
 
         allResults = data.results;
         currentIndex = 0;
@@ -89,10 +110,10 @@ async function search(query) {
         resultsCount.textContent = "";
 
         const data = await fetchLegoSetDetails(query);
+        resultsContainer.innerHTML = "";
         resultsContainer.appendChild(createContainer(data, "search-details"));
         loadMoreBtn.classList.add("hidden");
     } else if (searchType === "search-parts") {
-        resultsContainer.innerHTML = "";
         loadMoreBtn.classList.add("hidden");
         resultsHeader.textContent = "Set Parts";
         pageSize.classList.add("hidden");
@@ -100,7 +121,8 @@ async function search(query) {
         let currentPage = 1;
 
         let data = await fetchLegoSetParts(query, currentPage);
-                
+        resultsContainer.innerHTML = "";
+
         data.results.forEach(part => {
             resultsContainer.appendChild(createContainer(part, "search-parts"));
         });
@@ -117,9 +139,6 @@ async function search(query) {
         }        
         
         resultsCount.textContent = `Total Parts: ${data.count}`;
-        setNameContainer.textContent = `Set Number: ${data.results[0].set_num.split("-")[0]}`;
-        setNameContainer.classList.add("set-name-parts");
-        resultsContainer.appendChild(setNameContainer);
     }
 }
 
@@ -142,15 +161,20 @@ function loadMoreSets() {
 showLatestSets();
 
 async function displayVault() {
-    resultsContainer.innerHTML = "";
     if (savedSets.length === 0) {
         resultsContainer.innerHTML = `<p id="empty-vault-msg">Your Vault is Empty!</p>`;
         return;
     }
-    for (let setId of savedSets) {
-        const set = await fetchLegoSetDetails(setId);
+
+    renderSkeletons();
+
+    const setPromises = savedSets.map(setId => fetchLegoSetDetails(setId));
+    const fetchedSets = await Promise.all(setPromises);
+
+    resultsContainer.innerHTML = "";    
+    fetchedSets.forEach(set => {
         resultsContainer.appendChild(createContainer(set, "search-name"));
-    }
+    });
 }
 
 loadMoreBtn.addEventListener("click", loadMoreSets);
