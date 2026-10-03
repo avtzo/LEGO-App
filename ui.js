@@ -1,6 +1,8 @@
 import { savedSets } from "./app.js";
 
-const LEGO_THEMES = {
+
+export const LEGO_THEMES = {
+    // --- Core & Classic Themes ---
     1: "Technic",
     22: "Creator / Creator Expert",
     52: "City / Town",
@@ -9,13 +11,13 @@ const LEGO_THEMES = {
     158: "Star Wars",
     186: "Castle",
     207: "Trains",
-    246: "Harry Potter",
+    258: "Mindstorms / Robotics",
+    279: "Kingdoms",
     324: "Bionicle",
+    388: "Wild West",
     435: "Ninjago",
     494: "Friends",
     501: "Collectible Minifigures",
-    503: "Marvel Super Heroes",
-    504: "DC Super Heroes",
     505: "Architecture",
     507: "DUPLO / Educational",
     576: "LEGO Ideas / CUUSOO",
@@ -25,60 +27,118 @@ const LEGO_THEMES = {
     609: "The LEGO Movie",
     610: "BrickHeadz",
     621: "Speed Champions",
-    688: "Minecraft",
     694: "BrickLink Designer Program",
-    737: "Botanical Collection"
+
+    // --- Super Heroes & Pop Culture ---
+    503: "Marvel Super Heroes",
+    504: "DC Super Heroes",
+    246: "Harry Potter",
+    604: "Disney",
+    654: "Jurassic World / Dino",
+    706: "Avatar",
+    717: "Icons",
+    721: "Icons",
+    737: "Botanical Collection",
+    750: "Wicked",
+    751: "Dungeons & Dragons",
+
+    // --- Gaming & Interactive Themes ---
+    577: "Minecraft",
+    688: "Minecraft (Extra)",
+    695: "Super Mario",
+    709: "Sonic the Hedgehog",
+    746: "Animal Crossing",
+    747: "Fortnite",
+    748: "The Legend of Zelda",
+
+    // --- Popular IP & Retro/Action Themes ---
+    112: "Racers",
+    296: "Adventurers",
+    411: "Belville",
+    560: "SpongeBob SquarePants",
+    561: "The Lord of the Rings",
+    562: "The Hobbit",
+    563: "Monster Fighters",
+    565: "Teenage Mutant Ninja Turtles",
+    570: "Hero Factory",
+    571: "Legends of Chima",
+    575: "The Lone Ranger",
+    600: "Indiana Jones",
+    601: "Scooby-Doo",
+    602: "Angry Birds",
+    606: "Ghostbusters",
+    626: "Super Hero Girls",
+    672: "Overwatch",
+    673: "Stranger Things",
+    677: "Hidden Side",
+    680: "Trolls World Tour",
+    690: "LEGO ART",
+    691: "DOTS",
+    707: "Dreamzzz"
 };
 
-export function createContainer(item, searchType) {
-    const container = document.createElement("div");
-    container.classList.add("container");
-    const setTheme = item.theme_id; 
-    
-    const isSaved = savedSets.includes(item.set_num);
-    const iType = isSaved ? "solid" : "regular";
+export function createContainer(item, type) {
+    const card = document.createElement("div");
+    card.className = "container";
 
-    if (searchType === "search-name") {
-        container.classList.remove("parts");
-        container.classList.remove("details");
-        container.innerHTML = 
-        ` 
-            <img src="${item.set_img_url}" class="container-img">
-            <h1 class="set-name">${item.name}</h1>
-            <h2 class="set-theme">Theme: ${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
-            <div>
-                <p>Set Number: ${item.set_num.split("-")[0]}</p>
-                <button type="button" class="add-to-vault-btn" id="${item.set_num}"><i class="fa-${iType} fa-bookmark"></i></button>
-            </div>
-            `;
-    } else if (searchType === "search-details") {
-        container.classList.add("details");
-        container.classList.remove("parts");
-        container.innerHTML =
-        `
-            <img src="${item.set_img_url}" class="container-img">
-            <h1 class="set-name">${item.name}</h1>
-            <h2 class="set-theme">${LEGO_THEMES[setTheme] || "Unknown Theme"}</h2>
-            <div>
-                <p>Set Number: ${item.set_num.split("-")[0]}</p>
-                <p id="set-parts">Parts: ${item.num_parts}</p>
-                <p id="set-release">Release Date: ${item.year}</p>
+    const imgUrl = item.set_img_url || item.part.part_img_url || "./images/no-image.png";
+    const titleText = item.name || item.part.name || "Unknown LEGO Item";
+    const theme = LEGO_THEMES[item.theme_id] || "N/A";
+
+    if (type === "search-name") {
+        const setNum = item.set_num ? item.set_num.split("-")[0] : "";
+        const numParts = item.num_parts !== undefined ? `${item.num_parts} parts` : "";
+        const isSaved = savedSets.includes(item.set_num);
+        const iconClass = isSaved ? "fa-solid" : "fa-regular";
+
+        card.innerHTML = `
+            <img src="${imgUrl}" alt="${titleText}" class="container-img" loading="lazy">
+            <h1>${titleText}</h1>
+            <h2>${theme}</h2>
+            <div class="card-footer">
+                <div class="card-info">
+                    <h2>#${setNum}</h2>
+                    <p>${numParts}</p>
+                </div>
+                <button class="add-to-vault-btn" id="${item.set_num}" title="Add/Remove from Vault">
+                    <i class="${iconClass} fa-bookmark"></i>
+                </button>
             </div>
         `;
-        container.style.width = "250px";
-    } else if (searchType === "search-parts") {
-        container.classList.add("parts");
-        container.classList.remove("details");
-        container.innerHTML = 
-        `
-            <img src="${item.part.part_img_url}" alt="${item.part.name}" class="container-img">
-            <div>
-                <h1 class="part-id">${item.part.part_num}</h1>
-                <h3 class="part-quantity">Quantity: ${item.quantity}</h3>
+    } else if (type === "search-details") {
+        const setNum = item.set_num ? item.set_num.split("-")[0] : "";
+        const year = item.year ? `Released: ${item.year}` : "";
+        const numParts = item.num_parts !== undefined ? `${item.num_parts} parts` : "";
+
+        card.classList.add("details");
+        card.innerHTML = `
+            <img src="${imgUrl}" alt="${titleText}" class="container-img" loading="lazy">
+            <h1>${titleText}</h1>
+            
+            <div class="card-footer">
+                <div class="card-info">
+                    <h2>#${setNum} • ${year}</h2>
+                    <p>${numParts}</p>
+                </div>
             </div>
         `;
+    } else if (type === "search-parts") {
+        const partNum = item.part?.part_num || "";
+        const quantity = item.quantity ? `Qty: ${item.quantity}` : "";
 
+        card.classList.add("parts");
+        card.innerHTML = `
+            <img src="${imgUrl}" alt="${titleText}" class="container-img" loading="lazy">
+            <h1>${titleText}</h1>
+            
+            <div class="card-footer">
+                <div class="card-info">
+                    <h2>Part #${partNum}</h2>
+                    <p>${quantity}</p>
+                </div>
+            </div>
+        `;
     }
 
-    return container;
+    return card;
 }
