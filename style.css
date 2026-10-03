@@ -255,7 +255,6 @@ main {
     line-height: 1.2;
     margin-top: 5px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -331,4 +330,141 @@ main {
 #load-more-btn:hover {
     transform: scale(1.05);
     background-color: #ffea00;
+}
+
+/* Phone View */
+@media screen and (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 5px 0 10px 0;
+        gap: 10px;
+    }
+
+    .search-bar {
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .search-bar input {
+        width: 100%;
+        font-size: 1.3rem;
+    }
+
+    .search-bar button {
+        font-size: 1.5rem;
+    }
+
+    .search-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    #go-to-vault-btn {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    #results-count {
+        font-size: 1rem;
+        min-width: fit-content;
+    }
+
+    #results-header {
+        font-size: 2rem;
+        min-width: fit-content;
+    }
+
+    #load-more-btn {
+        font-size: 1.3rem;
+        width: 90%;
+    }
+}
+
+
+/* Portait Tablet */
+@media screen and (min-width: 769px) and (max-width: 1194px) and (orientation: portrait) {
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding-bottom: 20px;
+    }
+
+    .search-bar {
+        width: 70%;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .search-menu {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    #go-to-vault-btn {
+        font-size: 1.4rem;
+        margin: 5px 0;
+    }
+}
+
+
+/* Landscape Tablet */
+@media screen and (min-width: 769px) and (max-width: 1194px) and (orientation: landscape) {
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .search-bar {
+        width: 35%;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .search-menu {
+        width: 35%;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    #go-to-vault-btn {
+        font-size: 1.3rem;
+        margin: 0 20px;
+    }
+}
+
+
+/* Laptop View */
+@media screen and (min-width: 1195px) and (max-width: 1440px) {
+    .search-bar {
+        width: 30%;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .search-menu {
+        display: flex;
+        justify-content: space-evenly;
+        margin: 0 10px;
+        width: 35%;
+    }
+
+    .search-menu button {
+        font-size: 1.5rem;
+    }
+
+    #go-to-vault-btn {
+        font-size: 1.5rem;
+    }
 }
