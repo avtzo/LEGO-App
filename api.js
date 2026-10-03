@@ -1,4 +1,4 @@
-const apiKey = "2d9c5753a56fdc619d48907cba4edb13";
+const apiKey = "YOUR_API_KEY_HERE";
 const baseURL = "https://rebrickable.com/api/v3/lego";
 
 function normalizeSetId(setId) {
