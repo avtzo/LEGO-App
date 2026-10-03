@@ -38,7 +38,7 @@ export async function fetchLegoSetDetails(setId) {
 export async function fetchLegoSetParts(setId, page) {
     try {
         const normalizedSetId = normalizeSetId(setId);
-        const response = await fetch(`${baseURL}/sets/${normalizedSetId}/parts/?page=${page}`, { headers: { 'Authorization': `key ${apiKey}`}});
+        const response = await fetch(`${baseURL}/sets/${normalizedSetId}/parts/?page=${page}&page_size=100`, { headers: { 'Authorization': `key ${apiKey}`}});
         if (!response.ok) {
             throw new Error(`Error fetching data: ${response.status}`);
         }
