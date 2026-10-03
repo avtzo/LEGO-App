@@ -1,4 +1,4 @@
-# 🧱 LEGO Vault - Portfolio Web Application
+# 🧱 LEGO Vault - Web Application
 
 A responsive, single-page web application built with **Vanilla JavaScript** that allows users to search for LEGO sets using the **Rebrickable API**, view set details, and save their favorite builds into a persistent local collection ("Vault") using **LocalStorage**.
 
