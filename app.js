@@ -1,64 +1,46 @@
-// Global
+import { fetchLegoSet, fetchLegoSetDetails, fetchLegoSetParts, fetchLatestLego } from "./api.js";
+import { createContainer } from "./ui.js";
 
+// Global State
 let ON_VAULT = false;
 let allResults = [];
 let currentIndex = 0;
 let pageSizeValue = 8;
 
-// Imported Functions
+export let savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
 
-import { fetchLegoSet, fetchLegoSetDetails, fetchLegoSetParts, fetchLatestLego } from "./api.js";
-import { createContainer } from "./ui.js";
-
-
-// Buttons & Inputs
-
+// DOM Elements
 const loadMoreBtn = document.getElementById("load-more-btn");
 const searchBtn = document.getElementById("search-btn");
 const userInput = document.getElementById("user-input");
 const goToVaultBtn = document.getElementById("go-to-vault-btn");
-
-// Elements
-
 const searchMenu = document.querySelector(".search-menu");
 const resultsContainer = document.querySelector(".results-container");
 const resultsCount = document.getElementById("results-count");
 const resultsHeader = document.getElementById("results-header");
 const pageSize = document.getElementById("page-size");
-const resultsHeaderFilters = document.querySelector(".results-screen-filters");
-
-
-// Local Storage
-
-export const savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
-
-// Main Code
 
 function renderSkeletons() {
-    resultsContainer.innerHTML = "";
-
-    for (let i = 0; i < 6; i++) {
-        const skeletonCard = document.createElement("div");
-        skeletonCard.className = "skeleton-card";
-        skeletonCard.innerHTML = 
-        `
+    resultsContainer.innerHTML = Array(6).fill(`
+        <div class="skeleton-card">
             <div class="skeleton skeleton-image"></div>
             <div class="skeleton skeleton-text"></div>
             <div class="skeleton skeleton-text short"></div>
-        `;
-        resultsContainer.appendChild(skeletonCard);
-    }
+        </div>
+    `).join("");
 }
 
+function renderError(message = "Something went wrong. Please try again!") {
+    resultsContainer.innerHTML = `<p id="empty-vault-msg">${message}</p>`;
+    loadMoreBtn.classList.add("hidden");
+}
+
+// Event Listeners
 document.addEventListener("click", (e) => {
     const clickedBtn = e.target.closest(".search-type-btn");
     if (!clickedBtn) return;
 
-    const menuBtns = searchMenu.querySelectorAll(".search-type-btn");
-    menuBtns.forEach((btn) => {
-        btn.classList.remove("active");
-    });
-
+    searchMenu.querySelectorAll(".search-type-btn").forEach(btn => btn.classList.remove("active"));
     clickedBtn.classList.add("active");
 
     userInput.setAttribute("type", clickedBtn.dataset.type);
@@ -67,41 +49,37 @@ document.addEventListener("click", (e) => {
 
 async function showLatestSets() {
     renderSkeletons();
-
     const data = await fetchLatestLego();
+    
+    if (!data || !data.results) return renderError("Could not fetch latest sets.");
 
     resultsContainer.innerHTML = "";
     allResults = data.results;
     currentIndex = 0;
     pageSizeValue = Number(pageSize.value) || 8;
-    loadMoreBtn.classList.remove("hidden");
     
     loadMoreSets();
 }
 
 async function search(query) {
-    
     const activeBtn = searchMenu.querySelector(".search-type-btn.active");
     const searchType = activeBtn ? activeBtn.dataset.action : "search-name";
     
     renderSkeletons();
 
     if (searchType === "search-name") {
-        resultsContainer.innerHTML = "";
         resultsHeader.textContent = "Search Results";
-
         pageSize.classList.remove("hidden");
 
         const data = await fetchLegoSet(query);
-        resultsContainer.innerHTML = "";
+        if (!data || !data.results) return renderError("No sets found.");
 
+        resultsContainer.innerHTML = "";
         allResults = data.results;
         currentIndex = 0;
         pageSizeValue = Number(pageSize.value) || 8;
 
         resultsCount.textContent = `Found: ${data.count}`;
-        loadMoreBtn.classList.remove("hidden");
-
         loadMoreSets();
 
     } else if (searchType === "search-details") {
@@ -111,32 +89,24 @@ async function search(query) {
 
         const data = await fetchLegoSetDetails(query);
         resultsContainer.innerHTML = "";
+        if (!data) return renderError("Set not found.");
+        
         resultsContainer.appendChild(createContainer(data, "search-details"));
         loadMoreBtn.classList.add("hidden");
+
     } else if (searchType === "search-parts") {
         loadMoreBtn.classList.add("hidden");
         resultsHeader.textContent = "Set Parts";
         pageSize.classList.add("hidden");
         
-        let currentPage = 1;
-
-        let data = await fetchLegoSetParts(query, currentPage);
+        const data = await fetchLegoSetParts(query, 1);
         resultsContainer.innerHTML = "";
+
+        if (!data || !data.results) return renderError("No parts found for this set.");
 
         data.results.forEach(part => {
             resultsContainer.appendChild(createContainer(part, "search-parts"));
         });
-
-        while (data.next !== null) { // Gets all the parts of a set
-            currentPage ++;
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Timeout for the API Calls
-
-            data = await fetchLegoSetParts(query, currentPage);
-            
-            data.results.forEach(part => {
-                resultsContainer.appendChild(createContainer(part, "search-parts"));
-            });
-        }        
         
         resultsCount.textContent = `Total Parts: ${data.count}`;
     }
@@ -150,15 +120,8 @@ function loadMoreSets() {
     });
 
     currentIndex += pageSizeValue;
-
-    if (currentIndex >= allResults.length) {
-        loadMoreBtn.classList.add("hidden");
-    } else {
-        loadMoreBtn.classList.remove("hidden");
-    }
+    loadMoreBtn.classList.toggle("hidden", currentIndex >= allResults.length);
 }
-
-showLatestSets();
 
 async function displayVault() {
     if (savedSets.length === 0) {
@@ -172,26 +135,24 @@ async function displayVault() {
     const fetchedSets = await Promise.all(setPromises);
 
     resultsContainer.innerHTML = "";    
-    fetchedSets.forEach(set => {
+    fetchedSets.filter(Boolean).forEach(set => {
         resultsContainer.appendChild(createContainer(set, "search-name"));
     });
 }
 
+// Event Bindings
 loadMoreBtn.addEventListener("click", loadMoreSets);
 
 pageSize.addEventListener("change", (e) => {
-    const newPageSize = Number(e.target.value);
-    pageSizeValue = newPageSize;
+    pageSizeValue = Number(e.target.value);
     resultsContainer.innerHTML = "";
     currentIndex = 0;
-
     loadMoreSets();
 });
 
 searchBtn.addEventListener("click", () => {
     ON_VAULT = false;
     resultsCount.classList.remove("hidden");
-
     const query = userInput.value.trim();
 
     if (query === "") {
@@ -201,14 +162,11 @@ searchBtn.addEventListener("click", () => {
         showLatestSets();
         return;
     }
-
     search(query);
 });
 
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-        searchBtn.click();
-    }
+    if (e.key === "Enter") searchBtn.click();
 });
 
 goToVaultBtn.addEventListener("click", () => {
@@ -222,20 +180,22 @@ goToVaultBtn.addEventListener("click", () => {
 
 resultsContainer.addEventListener("click", (e) => {
     const addToVaultBtn = e.target.closest(".add-to-vault-btn");
-    if (!addToVaultBtn) {
-        return;
-    }
+    if (!addToVaultBtn) return;
+
+    const setId = addToVaultBtn.id;
     const bookmarkIcon = addToVaultBtn.querySelector("i");
-    if (savedSets.includes(addToVaultBtn.id)) {
-        const itemToRemove = savedSets.indexOf(addToVaultBtn.id);
-        savedSets.splice(itemToRemove, 1);
+
+    if (savedSets.includes(setId)) {
+        savedSets = savedSets.filter(id => id !== setId);
         bookmarkIcon.classList.replace("fa-solid", "fa-regular");
     } else {
-        savedSets.push(addToVaultBtn.id);
+        savedSets.push(setId);
         bookmarkIcon.classList.replace("fa-regular", "fa-solid");
     }
+
     localStorage.setItem("savedSets", JSON.stringify(savedSets));
-    if (ON_VAULT) {
-        displayVault();
-    }
+    if (ON_VAULT) displayVault();
 });
+
+// Init
+showLatestSets();
