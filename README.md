@@ -53,4 +53,4 @@ You need a web browser and a Rebrickable API Key.
    ```
 2. **Configure your API Key**
     - Open **api.js** and replace the placeholder with your key:
-      ```export const API_KEY = 'YOUR_REBRICKABLE_API_KEY';``` 
+      ```const apiKey = 'YOUR_API_KEY_HERE';``` 
