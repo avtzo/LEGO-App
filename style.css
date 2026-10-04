@@ -332,6 +332,14 @@ main {
     background-color: #ffea00;
 }
 
+#error-img {
+    width: 500px;
+    display: block;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 3px 0 10px black;
+}
+
 /* Phone View */
 @media screen and (max-width: 768px) {
     header {
@@ -379,6 +387,10 @@ main {
     #load-more-btn {
         font-size: 1.3rem;
         width: 90%;
+    }
+
+    #error-img {
+        width: 300px;
     }
 }
 
@@ -466,5 +478,9 @@ main {
 
     #go-to-vault-btn {
         font-size: 1.5rem;
+    }
+
+    #error-img {
+        width: 600px;
     }
 }
