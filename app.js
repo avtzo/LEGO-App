@@ -51,7 +51,7 @@ async function showLatestSets() {
     renderSkeletons();
     const data = await fetchLatestLego();
     
-    if (!data || !data.results) return renderError("Could not fetch latest sets.");
+    if (!data || !data.results) return renderError("Could not fetch latest sets. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
 
     resultsContainer.innerHTML = "";
     allResults = data.results;
@@ -72,7 +72,7 @@ async function search(query) {
         pageSize.classList.remove("hidden");
 
         const data = await fetchLegoSet(query);
-        if (!data || !data.results) return renderError("No sets found.");
+        if (!data || !data.results) return renderError("No sets found. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
 
         resultsContainer.innerHTML = "";
         allResults = data.results;
@@ -89,7 +89,7 @@ async function search(query) {
 
         const data = await fetchLegoSetDetails(query);
         resultsContainer.innerHTML = "";
-        if (!data) return renderError("Set not found.");
+        if (!data) return renderError("Set not found. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
         
         resultsContainer.appendChild(createContainer(data, "search-details"));
         loadMoreBtn.classList.add("hidden");
@@ -102,7 +102,7 @@ async function search(query) {
         const data = await fetchLegoSetParts(query, 1);
         resultsContainer.innerHTML = "";
 
-        if (!data || !data.results) return renderError("No parts found for this set.");
+        if (!data || !data.results) return renderError("No parts found for this set. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
 
         data.results.forEach(part => {
             resultsContainer.appendChild(createContainer(part, "search-parts"));
