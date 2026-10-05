@@ -26,7 +26,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #BD0000; /* Το κόκκινο φόντο μπαίνει στο body */
+    background-color: #BD0000;
 }
 
 .hidden {
@@ -227,6 +227,12 @@ main {
     width: 100%;
 }
 
+.genre-select-screen {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    width: 100%;
+}
 
 .container {
     display: flex;
@@ -239,6 +245,44 @@ main {
     border-radius: 20px;
     padding: 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.theme-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F7F7F7;
+    border-radius: 15px;
+    padding: 10px 0;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out; 
+}
+
+.theme-card:hover {
+    transform: scale(1.05);
+}
+
+.theme-card:focus {
+    transform: scale(1.03);
+}
+
+.theme-card:active {
+    transform: scale(0.95);
+}
+
+.theme-card img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.theme-card h1 {
+    width: 100%;
+    text-align: left;
+    margin-left: 15px;
+    font-size: 1.2rem;
+    font-weight: 800;
 }
 
 .container-img {
@@ -384,6 +428,16 @@ main {
         min-width: fit-content;
     }
 
+    .genre-select-screen {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .theme-card img {
+        width: 150px;
+        height: 150px;
+    }
+
     #load-more-btn {
         font-size: 1.3rem;
         width: 90%;
@@ -392,6 +446,7 @@ main {
     #error-img {
         width: 300px;
     }
+
 }
 
 
@@ -443,9 +498,8 @@ main {
 
     .search-menu {
         width: 35%;
-        display: flex;
-        align-items: center;
-        justify-content: space-evenly;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
     }
 
     #go-to-vault-btn {
