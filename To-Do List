@@ -1,1 +1,7 @@
-1. Ν/Α
+1. Complete theme search
+    Make a function to display themes based on .theme-card data-theme
+2. Add Genre Filters on search-name, latest-sets
+3. Add Sort by Button on search-name, latest-sets, search-parts
+    search-name = Default, Parts Count (asc/desc), Year Released (newest, oldest)
+    latest-sets = Default, Parts Count (asc/desc) 
+    search-parts = Default, Quantity (asc/desc)
