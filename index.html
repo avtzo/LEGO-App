@@ -20,6 +20,7 @@
             <button type="button" id="search-by-set-name-btn" data-type="text" data-action="search-name" data-placeholder="Search for a set" class="search-type-btn active">Search by Set Name</button>
             <button type="button" id="search-by-set-details-btn" data-type="number" data-action="search-details" data-placeholder="Search for set details. E.g. 42100" class="search-type-btn">Set Details</button>
             <button type="button" id="search-by-set-parts-btn" data-type="number" data-action="search-parts" data-placeholder="Search for set parts. E.g. 42055" class="search-type-btn">Set Parts</button>
+            <button type="button" id="search-by-genre-btn" class="search-type-btn">Themes</button>
         </div>
         <div class="vault">
             <button type="button" id="go-to-vault-btn">Go To Vault</button>
@@ -35,10 +36,15 @@
                 <option value="16">16</option>
                 <option value="32">32</option>
             </select>
+            <select id="sort-by" class="hidden">
+                
+            </select>
+        </div>
+        <div class="genre-select-screen hidden">
+
         </div>
         <div class="results-screen">
             <div class="results-container">
-                
                 <div class="skeleton-card">
                     <div class="skeleton skeleton-image"></div>
                     <div class="skeleton skeleton-text"></div>
