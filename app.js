@@ -1,5 +1,5 @@
 import { fetchLegoSet, fetchLegoSetDetails, fetchLegoSetParts, fetchLatestLego } from "./api.js";
-import { createContainer } from "./ui.js";
+import { createContainer, createGenreContainers, LEGO_THEMES } from "./ui.js";
 
 // Global State
 let ON_VAULT = false;
@@ -19,6 +19,9 @@ const resultsContainer = document.querySelector(".results-container");
 const resultsCount = document.getElementById("results-count");
 const resultsHeader = document.getElementById("results-header");
 const pageSize = document.getElementById("page-size");
+const sortBy = document.getElementById("sort-by");
+const genreScreen = document.querySelector(".genre-select-screen");
+const searchByThemesBtn = document.getElementById("search-by-genre-btn");
 
 function renderSkeletons() {
     resultsContainer.innerHTML = Array(6).fill(`
@@ -36,15 +39,19 @@ function renderError(message = "Something went wrong. Please try again!") {
 }
 
 // Event Listeners
-document.addEventListener("click", (e) => {
+document.addEventListener("click", (e) => {    
     const clickedBtn = e.target.closest(".search-type-btn");
-    if (!clickedBtn) return;
+    const clickedCard = e.target.closest(".theme-card");
 
+    if (clickedCard) console.log(clickedCard.dataset.theme);
+    
     searchMenu.querySelectorAll(".search-type-btn").forEach(btn => btn.classList.remove("active"));
-    clickedBtn.classList.add("active");
-
-    userInput.setAttribute("type", clickedBtn.dataset.type);
-    userInput.setAttribute("placeholder", clickedBtn.dataset.placeholder);
+    
+    if (clickedBtn) {
+        clickedBtn.classList.add("active");
+        userInput.setAttribute("type", clickedBtn.dataset.type);
+        userInput.setAttribute("placeholder", clickedBtn.dataset.placeholder);
+    }
 });
 
 async function showLatestSets() {
@@ -123,6 +130,16 @@ function loadMoreSets() {
     loadMoreBtn.classList.toggle("hidden", currentIndex >= allResults.length);
 }
 
+function displayThemes() {
+    genreScreen.innerHTML = "";
+    genreScreen.classList.remove("hidden");
+    const themes = Object.values(LEGO_THEMES);
+
+    for (let theme of themes) {
+        genreScreen.appendChild(createGenreContainers(theme));
+    }
+}
+
 async function displayVault() {
     if (savedSets.length === 0) {
         resultsContainer.innerHTML = `<p id="empty-vault-msg">Your Vault is Empty!</p>`;
@@ -163,6 +180,11 @@ searchBtn.addEventListener("click", () => {
         return;
     }
     search(query);
+});
+
+searchByThemesBtn.addEventListener("click", () => {
+    resultsContainer.classList.add("hidden");
+    displayThemes();
 });
 
 document.addEventListener("keydown", (e) => {
