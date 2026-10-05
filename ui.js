@@ -4,14 +4,14 @@ import { savedSets } from "./app.js";
 export const LEGO_THEMES = {
     // --- Core & Classic Themes ---
     1: "Technic",
-    22: "Creator / Creator Expert",
-    52: "City / Town",
+    22: "Creator",
+    52: "City",
     126: "Space",
     147: "Pirates",
     158: "Star Wars",
     186: "Castle",
     207: "Trains",
-    258: "Mindstorms / Robotics",
+    258: "Mindstorms",
     279: "Kingdoms",
     324: "Bionicle",
     388: "Wild West",
@@ -19,9 +19,9 @@ export const LEGO_THEMES = {
     494: "Friends",
     501: "Collectible Minifigures",
     505: "Architecture",
-    507: "DUPLO / Educational",
-    576: "LEGO Ideas / CUUSOO",
-    598: "Seasonal / Promotional",
+    507: "DUPLO",
+    576: "Ideas",
+    598: "Seasonal",
     605: "Classic",
     608: "Friends (New)",
     609: "The LEGO Movie",
@@ -34,7 +34,7 @@ export const LEGO_THEMES = {
     504: "DC Super Heroes",
     246: "Harry Potter",
     604: "Disney",
-    654: "Jurassic World / Dino",
+    654: "Jurassic World",
     706: "Avatar",
     717: "Icons",
     721: "Icons",
@@ -44,7 +44,6 @@ export const LEGO_THEMES = {
 
     // --- Gaming & Interactive Themes ---
     577: "Minecraft",
-    688: "Minecraft (Extra)",
     695: "Super Mario",
     709: "Sonic the Hedgehog",
     746: "Animal Crossing",
@@ -59,7 +58,6 @@ export const LEGO_THEMES = {
     561: "The Lord of the Rings",
     562: "The Hobbit",
     563: "Monster Fighters",
-    565: "Teenage Mutant Ninja Turtles",
     570: "Hero Factory",
     571: "Legends of Chima",
     575: "The Lone Ranger",
@@ -67,13 +65,9 @@ export const LEGO_THEMES = {
     601: "Scooby-Doo",
     602: "Angry Birds",
     606: "Ghostbusters",
-    626: "Super Hero Girls",
     672: "Overwatch",
     673: "Stranger Things",
     677: "Hidden Side",
-    680: "Trolls World Tour",
-    690: "LEGO ART",
-    691: "DOTS",
     707: "Dreamzzz"
 };
 
@@ -141,4 +135,17 @@ export function createContainer(item, type) {
     }
 
     return card;
+}
+
+export function createGenreContainers(theme) {
+    const themeCard = document.createElement("div");
+    themeCard.className = "theme-card";
+    themeCard.setAttribute("data-theme", theme);
+    themeCard.innerHTML =
+    `
+        <img class="theme-img" src="/images/covers/${theme.toLowerCase()}.jpg" alt="${theme} image" title="${theme}"></img>
+        <h1 class="theme-text">${theme}</h1>
+    `;
+
+    return themeCard;
 }
