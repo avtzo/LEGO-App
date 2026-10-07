@@ -20,7 +20,7 @@
             <button type="button" id="search-by-set-name-btn" data-type="text" data-action="search-name" data-placeholder="Search for a set" class="search-type-btn active">Search by Set Name</button>
             <button type="button" id="search-by-set-details-btn" data-type="number" data-action="search-details" data-placeholder="Search for set details. E.g. 42100" class="search-type-btn">Set Details</button>
             <button type="button" id="search-by-set-parts-btn" data-type="number" data-action="search-parts" data-placeholder="Search for set parts. E.g. 42055" class="search-type-btn">Set Parts</button>
-            <button type="button" id="search-by-genre-btn" class="search-type-btn">Themes</button>
+            <button type="button" id="search-by-genre-btn" class="search-type-btn" data-placeholder="Search for a set">Themes</button>
         </div>
         <div class="vault">
             <button type="button" id="go-to-vault-btn">Go To Vault</button>
@@ -31,20 +31,29 @@
         <div class="results-screen-filters">
             <p id="results-count" class="hidden"></p>
             <h1 id="results-header">Latest Sets</h1>
-            <select id="page-size">
-                <option value="8" selected>8</option>
-                <option value="16">16</option>
-                <option value="32">32</option>
-            </select>
-            <select id="sort-by" class="hidden">
+
+            <div class="filters">
+                <select id="page-size">
+                    <option value="8" selected>8</option>
+                    <option value="16">16</option>
+                    <option value="32">32</option>
+                </select>
+
+                <select id="sort-by" class="hidden">
+                    
+                </select>
                 
-            </select>
+                <div class="theme-btns">
+                        <!-- Filled Dynamically -->
+                </div>
+            </div>
         </div>
         <div class="genre-select-screen hidden">
-
+            <!-- Filled Dyncamically -->
         </div>
         <div class="results-screen">
             <div class="results-container">
+                <!-- Filled Dynamically -->
                 <div class="skeleton-card">
                     <div class="skeleton skeleton-image"></div>
                     <div class="skeleton skeleton-text"></div>
