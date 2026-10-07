@@ -36,7 +36,6 @@ export const LEGO_THEMES = {
     604: "Disney",
     654: "Jurassic World",
     706: "Avatar",
-    717: "Icons",
     721: "Icons",
     737: "Botanical Collection",
     750: "Wicked",
@@ -75,8 +74,8 @@ export function createContainer(item, type) {
     const card = document.createElement("div");
     card.className = "container";
 
-    const imgUrl = item.set_img_url || item.part.part_img_url || "./images/no-image.png";
-    const titleText = item.name || item.part.name || "Unknown LEGO Item";
+    const imgUrl = item.set_img_url || item.part?.part_img_url || "./images/no-image.png";
+    const titleText = item.name || item.part?.name || "Unknown LEGO Item";
     const theme = LEGO_THEMES[item.theme_id] || "N/A";
 
     if (type === "search-name") {
@@ -139,8 +138,9 @@ export function createContainer(item, type) {
 
 export function createGenreContainers(theme) {
     const themeCard = document.createElement("div");
+    const themeId = Object.keys(LEGO_THEMES).find(id => LEGO_THEMES[id] === theme);
     themeCard.className = "theme-card";
-    themeCard.setAttribute("data-theme", theme);
+    themeCard.setAttribute("data-theme", themeId);
     themeCard.innerHTML =
     `
         <img class="theme-img" src="/images/covers/${theme.toLowerCase()}.jpg" alt="${theme} image" title="${theme}"></img>
@@ -149,3 +149,14 @@ export function createGenreContainers(theme) {
 
     return themeCard;
 }
+
+export function createThemeBtn(theme) { // Gets theme name
+    const themeBtn = document.createElement("button");
+    themeBtn.setAttribute("type", "button");
+    themeBtn.className = "theme-btn";
+    themeBtn.textContent = theme;
+    themeBtn.setAttribute("data-theme-id", Object.keys(LEGO_THEMES).find(id => LEGO_THEMES[id] === theme));
+
+    return themeBtn;
+}
+
