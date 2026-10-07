@@ -50,9 +50,23 @@ export async function fetchLegoSetParts(setId, page) {
     }
 }
 
-export async function fetchLatestLego() {
+export async function fetchLatestLego(theme) {
     try {
-        const response = await fetch(`${baseURL}/sets/?min_year=${new Date().getFullYear()}&min_parts=150`, { headers: { 'Authorization': `key ${apiKey}`}});
+        const response = await fetch(`${baseURL}/sets/?min_year=${new Date().getFullYear()}&min_parts=150&theme_id=${theme || ""}&page_size=100`, { headers: { 'Authorization': `key ${apiKey}`}});
+        if (!response.ok) {
+            throw new Error(`Error fetching data: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch(error) {
+        console.error(error.message);
+    }
+}
+
+export async function fetchThemedSet(themeId) {
+    try {
+        const response = await fetch(`${baseURL}/sets/?page_size=100&theme_id=${themeId}&min_year=2010&min_parts=50`, { headers: { 'Authorization': `key ${apiKey}`}});
         if (!response.ok) {
             throw new Error(`Error fetching data: ${response.status}`);
         }
