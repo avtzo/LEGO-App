@@ -18,8 +18,8 @@
         </div>
         <div class="search-menu">
             <button type="button" id="search-by-set-name-btn" data-type="text" data-action="search-name" data-placeholder="Search for a set" class="search-type-btn active">Search by Set Name</button>
-            <button type="button" id="search-by-set-details-btn" data-type="number" data-action="search-details" data-placeholder="Search for set details. E.g. 42100" class="search-type-btn">Set Details</button>
-            <button type="button" id="search-by-set-parts-btn" data-type="number" data-action="search-parts" data-placeholder="Search for set parts. E.g. 42055" class="search-type-btn">Set Parts</button>
+            <button type="button" id="search-by-set-details-btn" data-type="text" data-action="search-details" data-placeholder="Search for set details. E.g. 42100-1" class="search-type-btn">Set Details</button>
+            <button type="button" id="search-by-set-parts-btn" data-type="text" data-action="search-parts" data-placeholder="Search for set parts. E.g. 42055-1" class="search-type-btn">Set Parts</button>
             <button type="button" id="search-by-genre-btn" class="search-type-btn" data-placeholder="Search for a set">Themes</button>
         </div>
         <div class="vault">
@@ -39,14 +39,19 @@
                     <option value="32">32</option>
                 </select>
 
-                <select id="sort-by" class="hidden">
-                    
+                <select id="sort-by">
+                    <option value="default" selected>Default Sorting</option>
+                    <option value="parts-asc">Part Count (Ascending)</option>
+                    <option value="parts-desc">Part Count (Descending)</option>
+                    <option value="release-asc">Year Released (Oldest)</option>
+                    <option value="release-desc">Year Released (Newest)</option>
                 </select>
                 
                 <div class="theme-btns">
-                        <!-- Filled Dynamically -->
+                    <!-- Filled Dynamically -->
                 </div>
             </div>
+
         </div>
         <div class="genre-select-screen hidden">
             <!-- Filled Dyncamically -->
