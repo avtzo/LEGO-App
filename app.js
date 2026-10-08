@@ -10,6 +10,7 @@ let pageSizeValue = 8;
 export let savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
 
 // DOM Elements
+
 const loadMoreBtn = document.getElementById("load-more-btn");
 const searchBtn = document.getElementById("search-btn");
 const userInput = document.getElementById("user-input");
@@ -51,6 +52,8 @@ document.addEventListener("click", (e) => {
 
     async function displayThemedSets() {
         renderSkeletons();
+        pageSize.classList.remove("hidden");
+        sortBy.classList.remove("hidden");
 
         genreScreen.classList.add("hidden");
         resultsContainer.classList.remove("hidden");
@@ -71,14 +74,13 @@ document.addEventListener("click", (e) => {
 
     async function displayLatestThemedSets(themeId) {
         renderSkeletons();
+        pageSize.classList.remove("hidden");
+        sortBy.classList.remove("hidden");
 
         const data = await fetchLatestLego(themeId);
-        data.results.forEach(set => {
-            resultsContainer.appendChild(createContainer(set, "search-name"));
-        })
         if (!data || !Array.isArray(data.results)) {
-                return renderError("Could not fetch themed sets. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
-            }
+            return renderError("Could not fetch themed sets. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
+        }
         if (data.count === 0) {
             return renderError("No Sets to display :(");
         }
@@ -92,16 +94,15 @@ document.addEventListener("click", (e) => {
 
     if (clickedCard) {
         resultsContainer.innerHTML = "";
+        resultsHeader.textContent = Object.values(LEGO_THEMES).find(theme => LEGO_THEMES[clickedCard.dataset.theme] === theme);
         console.log(clickedCard.dataset.theme);
         displayThemedSets();
     };
 
-
     themeBtns.querySelectorAll(".theme-btn").forEach(btn => btn.classList.remove("active-theme"));
 
-    searchMenu.querySelectorAll(".search-type-btn").forEach(btn => btn.classList.remove("active"));
-    
     if (themeBtn) {
+        ON_VAULT = false;
         loadMoreBtn.classList.add("hidden");
         resultsContainer.innerHTML = "";
         themeBtn.classList.add("active-theme");
@@ -109,10 +110,14 @@ document.addEventListener("click", (e) => {
     }
 
     if (clickedBtn) {
+        searchMenu.querySelectorAll(".search-type-btn").forEach(btn => btn.classList.remove("active"));
         clickedBtn.classList.add("active");
         userInput.setAttribute("type", clickedBtn.dataset.type);
         userInput.setAttribute("placeholder", clickedBtn.dataset.placeholder);
+        ON_VAULT = false;
     }
+
+    if (clickedCard) ON_VAULT = false;
 });
 
 function displayThemeBtns() {
@@ -123,6 +128,8 @@ function displayThemeBtns() {
 
 async function showLatestSets() {
     renderSkeletons();
+    pageSize.classList.remove("hidden");
+    sortBy.classList.remove("hidden");
     const data = await fetchLatestLego();
     
     if (!data || !data.results) return renderError("Could not fetch latest sets. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
@@ -141,10 +148,13 @@ async function search(query) {
     const searchType = activeBtn ? activeBtn.dataset.action : "search-name";
     
     renderSkeletons();
+    allResults = [];
+    currentIndex = 0;
 
     if (searchType === "search-name") {
         resultsHeader.textContent = "Search Results";
         pageSize.classList.remove("hidden");
+        sortBy.classList.remove("hidden");
 
         const data = await fetchLegoSet(query);
         if (!data || !data.results) return renderError("No sets found. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
@@ -160,6 +170,8 @@ async function search(query) {
     } else if (searchType === "search-details") {
         resultsHeader.textContent = "Set Details";
         pageSize.classList.add("hidden");
+        sortBy.classList.add("hidden");
+        themeBtns.classList.add("hidden");
         resultsCount.textContent = "";
 
         const data = await fetchLegoSetDetails(query);
@@ -173,11 +185,12 @@ async function search(query) {
         loadMoreBtn.classList.add("hidden");
         resultsHeader.textContent = "Set Parts";
         pageSize.classList.add("hidden");
+        sortBy.classList.add("hidden");
         
         const data = await fetchLegoSetParts(query, 1);
         resultsContainer.innerHTML = "";
 
-        if (!data || !data.results) return renderError("No parts found for this set. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
+        if (!data || !Array.isArray(data.results)) return renderError("No parts found for this set. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
 
         data.results.forEach(part => {
             resultsContainer.appendChild(createContainer(part, "search-parts"));
@@ -188,19 +201,37 @@ async function search(query) {
 }
 
 function loadMoreSets() {
-    if (currentIndex >= allResults.length) {
+    const results = getSortedResults();
+    if (currentIndex >= results.length) {
         loadMoreBtn.classList.add("hidden");
         return;
     }
 
-    const nextBatch = allResults.slice(currentIndex, currentIndex + pageSizeValue);
+    const nextBatch = results.slice(currentIndex, currentIndex + pageSizeValue);
 
     nextBatch.forEach(set => {
         resultsContainer.appendChild(createContainer(set, "search-name"));
     });
 
     currentIndex += nextBatch.length;
-    loadMoreBtn.classList.toggle("hidden", currentIndex >= allResults.length);
+    loadMoreBtn.classList.toggle("hidden", currentIndex >= results.length);
+}
+
+function getSortedResults() {
+    const results = [...allResults];
+
+    switch (sortBy.value) {
+        case "parts-asc":
+            return results.sort((a, b) => (a.num_parts ?? 0) - (b.num_parts ?? 0));
+        case "parts-desc":
+            return results.sort((a, b) => (b.num_parts ?? 0) - (a.num_parts ?? 0));
+        case "release-asc":
+            return results.sort((a, b) => (a.year ?? 0) - (b.year ?? 0));
+        case "release-desc":
+            return results.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+        default:
+            return results;
+    }
 }
 
 function displayThemes() {
@@ -215,6 +246,8 @@ function displayThemes() {
 
 async function displayVault() {
     if (savedSets.length === 0) {
+        allResults = [];
+        currentIndex = 0;
         resultsContainer.innerHTML = `<p id="empty-vault-msg">Your Vault is Empty!</p>`;
         return;
     }
@@ -224,8 +257,12 @@ async function displayVault() {
     const setPromises = savedSets.map(setId => fetchLegoSetDetails(setId));
     const fetchedSets = await Promise.all(setPromises);
 
-    resultsContainer.innerHTML = "";    
-    fetchedSets.filter(Boolean).forEach(set => {
+    allResults = fetchedSets.filter(Boolean);
+    currentIndex = 0;
+    sortBy.classList.remove("hidden");
+
+    resultsContainer.innerHTML = "";
+    getSortedResults().forEach(set => {
         resultsContainer.appendChild(createContainer(set, "search-name"));
     });
 }
@@ -257,6 +294,12 @@ searchBtn.addEventListener("click", () => {
 
 searchByThemesBtn.addEventListener("click", () => {
     resultsContainer.classList.add("hidden");
+    sortBy.classList.add("hidden");
+    themeBtns.classList.add("hidden");
+    loadMoreBtn.classList.add("hidden");
+    pageSize.classList.add("hidden");
+    resultsHeader.textContent = "Themes";
+    resultsCount.classList.add("hidden");
     displayThemes();
 });
 
@@ -291,6 +334,18 @@ resultsContainer.addEventListener("click", (e) => {
 
     localStorage.setItem("savedSets", JSON.stringify(savedSets));
     if (ON_VAULT) displayVault();
+});
+
+sortBy.addEventListener("change", () => {
+    resultsContainer.innerHTML = "";
+    currentIndex = 0;
+    if (ON_VAULT) {
+        getSortedResults().forEach(set => {
+            resultsContainer.appendChild(createContainer(set, "search-name"));
+        });
+    } else {
+        loadMoreSets();
+    }
 });
 
 // Init
