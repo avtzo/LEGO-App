@@ -3,9 +3,9 @@ import { createContainer, createGenreContainers, LEGO_THEMES, createThemeBtn } f
 
 // Global State
 let ON_VAULT = false;
-let allResults = [];
-let currentIndex = 0;
-let pageSizeValue = 8;
+let allResults = []; // For sorting purposes
+let currentIndex = 0; // Pagination
+let pageSizeValue = 8; // Pagination
 
 export let savedSets = JSON.parse(localStorage.getItem("savedSets")) || [];
 
@@ -43,8 +43,7 @@ function renderError(message = "Something went wrong. Please try again!") {
 }
 
 
-
-// Event Listeners
+// Event Listeners & Functions
 document.addEventListener("click", (e) => {
     const clickedBtn = e.target.closest(".search-type-btn");
     const clickedCard = e.target.closest(".theme-card");
@@ -65,7 +64,7 @@ document.addEventListener("click", (e) => {
             return renderError("No Sets to display :(");
         }
 
-        resultsContainer.innerHTML = "";
+        resultsContainer.innerHTML = ""; // Clears skeletons
         allResults = data.results;
         currentIndex = 0;
         pageSizeValue = Number(pageSize.value) || 8;
@@ -85,23 +84,24 @@ document.addEventListener("click", (e) => {
             return renderError("No Sets to display :(");
         }
 
-        resultsContainer.innerHTML = "";
+        resultsContainer.innerHTML = ""; // Clears skeletons
         allResults = data.results;
         currentIndex = 0;
         pageSizeValue = Number(pageSize.value) || 8;
         loadMoreSets();
     }
 
-    if (clickedCard) {
+    if (clickedCard) { // Theme Card
         resultsContainer.innerHTML = "";
+        ON_VAULT = false;
         resultsHeader.textContent = Object.values(LEGO_THEMES).find(theme => LEGO_THEMES[clickedCard.dataset.theme] === theme);
         console.log(clickedCard.dataset.theme);
         displayThemedSets();
     };
 
-    themeBtns.querySelectorAll(".theme-btn").forEach(btn => btn.classList.remove("active-theme"));
+    themeBtns.querySelectorAll(".theme-btn").forEach(btn => btn.classList.remove("active-theme")); // 1 Button has .active only
 
-    if (themeBtn) {
+    if (themeBtn) { // Header themes
         ON_VAULT = false;
         loadMoreBtn.classList.add("hidden");
         resultsContainer.innerHTML = "";
@@ -117,10 +117,9 @@ document.addEventListener("click", (e) => {
         ON_VAULT = false;
     }
 
-    if (clickedCard) ON_VAULT = false;
 });
 
-function displayThemeBtns() {
+function displayThemeBtns() { // Creates theme buttons dynamically
     for (let theme in LEGO_THEMES) {
         themeBtns.insertAdjacentElement('beforeend', createThemeBtn(LEGO_THEMES[theme]));
     }
@@ -134,7 +133,7 @@ async function showLatestSets() {
     
     if (!data || !data.results) return renderError("Could not fetch latest sets. <img src='images/lego-404.jpg' alt='Error Image' id='error-img'>");
 
-    resultsContainer.innerHTML = "";
+    resultsContainer.innerHTML = ""; // Clears skeletons
     allResults = data.results;
     currentIndex = 0;
     pageSizeValue = Number(pageSize.value) || 8;
@@ -144,8 +143,8 @@ async function showLatestSets() {
 
 
 async function search(query) {
-    const activeBtn = searchMenu.querySelector(".search-type-btn.active");
-    const searchType = activeBtn ? activeBtn.dataset.action : "search-name";
+    const activeBtn = searchMenu.querySelector(".search-type-btn.active"); // Active button from header
+    const searchType = activeBtn ? activeBtn.dataset.action : "search-name"; // Search based on header button selected
     
     renderSkeletons();
     allResults = [];
@@ -254,7 +253,7 @@ async function displayVault() {
 
     renderSkeletons();
 
-    const setPromises = savedSets.map(setId => fetchLegoSetDetails(setId));
+    const setPromises = savedSets.map(setId => fetchLegoSetDetails(setId)); // Gets full set details from saved ID of a set
     const fetchedSets = await Promise.all(setPromises);
 
     allResults = fetchedSets.filter(Boolean);

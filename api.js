@@ -1,7 +1,7 @@
 const apiKey = "YOUR_API_KEY_HERE";
 const baseURL = "https://rebrickable.com/api/v3/lego";
 
-function normalizeSetId(setId) {
+function normalizeSetId(setId) { // Removed -1 from the setId (E.g. 42100-1 -> 42100)
     const value = String(setId).trim();
     return value.includes("-") ? value : `${value}-1`;
 }
@@ -20,7 +20,7 @@ export async function fetchLegoSet(query) {
     }
 }
 
-export async function fetchLegoSetDetails(setId) {
+export async function fetchLegoSetDetails(setId) { // Gets details of a set based on set ID
     try {
         const normalizedSetId = normalizeSetId(setId);
         const response = await fetch(`${baseURL}/sets/${normalizedSetId}/`, { headers: { 'Authorization': `key ${apiKey}`}});
@@ -50,7 +50,7 @@ export async function fetchLegoSetParts(setId, page) {
     }
 }
 
-export async function fetchLatestLego(theme) {
+export async function fetchLatestLego(theme) { // Gets sets from the current year
     try {
         const response = await fetch(`${baseURL}/sets/?min_year=${new Date().getFullYear()}&min_parts=150&theme_id=${theme || ""}&page_size=100`, { headers: { 'Authorization': `key ${apiKey}`}});
         if (!response.ok) {

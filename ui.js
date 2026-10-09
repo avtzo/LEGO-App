@@ -70,7 +70,7 @@ export const LEGO_THEMES = {
     707: "Dreamzzz"
 };
 
-export function createContainer(item, type) {
+export function createContainer(item, type) { // Creates container based on search-type
     const card = document.createElement("div");
     card.className = "container";
 
@@ -82,7 +82,7 @@ export function createContainer(item, type) {
         const setNum = item.set_num ? item.set_num.split("-")[0] : "";
         const numParts = item.num_parts !== undefined ? `${item.num_parts} parts` : "";
         const isSaved = savedSets.includes(item.set_num);
-        const iconClass = isSaved ? "fa-solid" : "fa-regular";
+        const iconClass = isSaved ? "fa-solid" : "fa-regular"; // Toggle between filled & unfilled save button
 
         card.innerHTML = `
             <img src="${imgUrl}" alt="${titleText}" class="container-img" loading="lazy">
@@ -136,9 +136,9 @@ export function createContainer(item, type) {
     return card;
 }
 
-export function createGenreContainers(theme) {
+export function createGenreContainers(theme) { // Creates theme containers
     const themeCard = document.createElement("div");
-    const themeId = Object.keys(LEGO_THEMES).find(id => LEGO_THEMES[id] === theme);
+    const themeId = Object.keys(LEGO_THEMES).find(id => LEGO_THEMES[id] === theme); // Gets themeId from themeName
     themeCard.className = "theme-card";
     themeCard.setAttribute("data-theme", themeId);
     themeCard.innerHTML =
@@ -155,7 +155,7 @@ export function createThemeBtn(theme) { // Gets theme name
     themeBtn.setAttribute("type", "button");
     themeBtn.className = "theme-btn";
     themeBtn.textContent = theme;
-    themeBtn.setAttribute("data-theme-id", Object.keys(LEGO_THEMES).find(id => LEGO_THEMES[id] === theme));
+    themeBtn.setAttribute("data-theme-id", Object.keys(LEGO_THEMES).find(id => LEGO_THEMES[id] === theme)); // Gets themeId from themeName
 
     return themeBtn;
 }
