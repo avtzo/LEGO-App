@@ -6,10 +6,10 @@ A responsive, single-page web application built with **Vanilla JavaScript** that
 
 ## 🌟 Key Features
 
-- **Dynamic LEGO Search:** Query thousands of official LEGO sets in real-time powered by Rebrickable's public REST API.
+- **Dynamic LEGO Search:** Query thousands of official LEGO sets in real-time powered by Rebrickable's public API.
 - **Personal Vault Collection:** Save and remove sets from your personal collection without requiring a backend database.
 - **Client-Side Persistence:** LocalStorage integration preserves user data across browser sessions.
-- **Fully Responsive Design:** Custom-crafted layout optimized across mobile devices, portrait/landscape tablets, and laptops.
+- **Fully Responsive Design:** Custom-crafted layout optimized across mobile devices, tablets, and laptops.
 - **Optimized Performance:** Debounced inputs, event delegation, and lazy image loading for smooth UI rendering.
 
 ---
